@@ -20,6 +20,7 @@ typedef enum statue{
 }Statue;
 
 static Qnode * Linklist_reverse(Qnode * temp);
+static Qnode * Linklist_reverse2(Qnode * temp);
 
 Statue Queue_init(Queue ** temp)
 {
@@ -112,7 +113,7 @@ Statue Queue_reverse(Queue * temp)
 {
     Qnode * newhead = temp -> tail;
     Qnode * newtail = temp -> head;
-    Linklist_reverse(temp -> head);
+    Linklist_reverse2(temp -> head);
     temp -> head = newhead;
     temp -> tail = newtail;
     return OK;
@@ -132,6 +133,16 @@ static Qnode * Linklist_reverse(Qnode * temp)
         newhead = node;
     }
     return newhead;
+}
+
+static Qnode * Linklist_reverse2(Qnode * temp)
+{
+    if(temp == NULL || temp -> next == NULL)
+        return temp;
+    Qnode * node = Linklist_reverse2(temp -> next);
+    temp -> next -> next = temp;
+    temp -> next = NULL;
+    return node;
 }
 
 
