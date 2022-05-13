@@ -8,6 +8,7 @@
 #define FILE_MAX 50
 #define READ_MAX 256
 #define SYS_ACCOUNT "system_accountlist.txt"
+#define SYS_TEMPFILE "System_temp.txt"
 typedef enum statue{
     OK = 1,
     Error = 0
@@ -64,6 +65,8 @@ Statue Register_process(char usename[],char password[]); //×Óº¯Êı£¬ÓÃÓÚº¯ÊıÄÚ²¿µ
 Statue User_login(User * cur);//ÓÃ»§µÇÂ¼
 Login_Statue Account_Login(char usename[],char password[]);//×Óº¯Êı£¬ÓÃÓÚµÇÂ¼ÄÚ²¿µÄÊµÏÖ
 Statue Read_User_Information(char * usename,User * cur);
+
+Statue User_UnsubscribeAccount(void);//ÓÃ»§×¢Ïú
     //ÏµÍ³¼¶
 void System_Menu(void);//ÏÔÊ¾²Ëµ¥
 void UserLoginMenu(void);//ÓÃ»§³É¹¦µÇÂ¼Ö®ºóµÄ½çÃæ
@@ -73,16 +76,13 @@ Statue System_ShowAllUser(void);//ÏÔÊ¾ËùÓĞÓÃ»§
 Statue System_ShowAllDetail(void);//ÏÔÊ¾ËùÓĞÓÃ»§µÄÏêÏ¸ĞÅÏ¢
 Statue System_ChangeMoney_process(char * usename,int number);//ĞŞ¸ÄÒ»¸öÓÃ»§µÄÓà¶î,ÄÚ²¿¹ı³Ì
 Statue System_ChangeMoney(void);//ĞŞ¸ÄÒ»¸öÓÃ»§µÄÓà¶î
-
+Statue SystemPoint_Reset(void);//ÖØÖÃÏµÍ³Ö¸Õë
 Statue System_RerangeProcess(void);//°´ÕÕ½ğ¶î¶ÔÓÃ»§Êı¾İÅÅĞò
 Statue ShowListData(List * test);//½«Á´±íµÄÊı¾İÏÔÊ¾
 Statue System_ChangeAuthority(void);//¸Ä±äÒ»¸öÓÃ»§µÄÈ¨ÏŞ
 Statue System_ChangeAuthority_process(char * usename,int n);//¸Ä±äÓÃ»§È¨ÏŞ£¬¾ßÌå¹ı³Ì
-List * merge(List * head1,List * head2);//¹é²¢¹ı³Ì
-List * mergesort(List * head,List * end);//¹é²¢ÅÅĞò
-List * List_sort(List * exam);//¶ÔÊı¾İ½øĞĞÅÅĞò
-List * reverse(List * head);//·´×ªÁ´±í
-List * List_init(char * filename);//½«ÎÄ¼şÖĞµÄÄÚÈİ¶Á³ö²¢½«Æä×ª»¯³ÉÒ»ÕÅÁ´±í
+Statue System_Delete_Process(char usename[]);//É¾³ıÒ»¸öÓÃ»§£¬¾ßÌå¹ı³Ì
+Statue System_DeleteAUser(void);//É¾³ıÒ»¸öÓÃ»§
 //This is my FileIO function
 Statue Show_A_File_version1(char * FileName);//ÏÔÊ¾Ò»¸öÎÄ±¾ÎÄ¼şµÄËùÓĞÄÚÈİ
 Statue Create_A_File_version1(char * FileName);//´´½¨Ò»¸öÎÄ±¾ÎÄ¼ş£¬ĞèÒª´øºó×º
@@ -98,15 +98,20 @@ Statue Write_A_File_version4(char * FileName,char * target,int m,int max); //ÔÚ¾
 Statue Read_All_Data(char * FileName,char * target); //½«Ò»¸öÎÄ¼şµÄÄÚÈİÈ«²¿È¡³ö·ÅÈëtargetÖĞ£¬×î´ó³¤¶ÈÎª256
 Statue Read_All_Data_version2(char * FileName,char * target,int m,int max); //½«Ò»¸öÎÄ¼ş´Ó¿ªÍ·m´¦µÄÄÚÈİÈ¡max¸ö·ÅÈëtargetÖĞ
 Statue Delete_AendLetter(char * name,int n);//É¾³ıµ¹Êı¼¸¸öÊı¾İ
-
-
+Statue DelectDataPriod(char filename[],int start,int length);//É¾³ıfileÖĞµÚstart¿ªÊ¼Î»µÄlength³¤¶ÈµÄÄÚÈİ
+List * merge(List * head1,List * head2);//¹é²¢¹ı³Ì
+List * mergesort(List * head,List * end);//¹é²¢ÅÅĞò
+List * List_sort(List * exam);//¶ÔÊı¾İ½øĞĞÅÅĞò
+List * reverse(List * head);//·´×ªÁ´±í
+List * List_init(char * filename);//½«ÎÄ¼şÖĞµÄÄÚÈİ¶Á³ö²¢½«Æä×ª»¯³ÉÒ»ÕÅÁ´±í
 //This is my IO function
 char * s_gets(char * st,int n);
 
 int main(void)
 {   
-  
-  
+  //DelectDataPriod("us",5,5);
+  //System_Delete_Process("us");
+  //while(1);
   while(1) 
    { 
        System_Menu();
@@ -395,8 +400,15 @@ Statue Delete_AendLetter(char * name,int n) //É¾³ıµ¹ÊıµÄ¼¸¸ö×ÖÄ¸
     ch1 = getc(fp);
     ch2 = getc(fp1);
     fp2 = fopen("System_temp.txt","w+");
-    if(ch1 == EOF)
-        return Error;
+    if(ch1 == EOF) // Èç¹ûÕıºÃµÈÓÚ³¤¶È£¬¾Í½«Õû¸öÎÄ¼şÖØÖÃ
+      {     
+          fclose(fp);
+          fclose(fp1);
+          fclose(fp2);
+          fp2 = fopen(name,"w+");
+          fclose(fp2);
+          return OK;
+      }  
     while(ch1 != EOF)
     {
         putc(ch2,fp2);
@@ -418,23 +430,77 @@ Statue Delete_AendLetter(char * name,int n) //É¾³ıµ¹ÊıµÄ¼¸¸ö×ÖÄ¸
     return OK;
 
 }
+
+Statue DelectDataPriod(char filename[],int start,int length)//É¾³ıfileÖĞµÚstart¿ªÊ¼Î»µÄlength³¤¶ÈµÄÄÚÈİ
+{
+    if(IsFileExist(filename) == No)
+    {
+        printf("Delete Error:This File is Not exist!\n");
+        return Error;
+    }
+    if(IsFileExist(SYS_TEMPFILE) == No)
+    {
+        printf("SystemTempFile is Lost!!\n");
+        return Error;
+    }
+    FILE * fp = fopen(filename,"r+");
+    FILE * temp = fopen(SYS_TEMPFILE,"w+");
+    int ch1;
+    int ch2;
+    for(int i = 0;i < start;i++)
+    {
+        ch1 = getc(fp);
+        putc(ch1,temp);
+    }
+    FilePointMoveForward(fp,length);
+    ch1 = getc(fp);
+    while(ch1 != EOF)
+    {
+        putc(ch1,temp);
+        ch1 = getc(fp);
+    }
+    fclose(fp);
+    fp = fopen(filename,"w+");
+    FilePointSetHead(temp);
+    FilePointSetHead(fp);
+    ch1 = getc(temp);
+    while(ch1 != EOF)
+    {
+        putc(ch1,fp);
+        ch1 = getc(temp);
+    }
+    
+    fclose(fp); // Ò»¶¨¹Ø£¬²»È»Êı¾İÔÚ»º³åÇøÖĞÃ»Ğ´µ½ÎÄ¼şÖĞ
+    fclose(temp);
+    return OK;
+    //FilePointMoveForward(fp,start);
+
+}
+
 //system function
 Statue User_register(void)
 {   
     char usename[ACCOUNT_MAX] = {0};
     char password[ACCOUNT_MAX] = {0};
-    User * temp = (User *)(malloc(sizeof(User)));   //´Ë´¦ÔİÎ´ÊÍ·Å£¬»ØÀ´¸Ä£¡£¡£¡£¡
+    User * temp = (User *)(malloc(sizeof(User)));   //
     printf("You are register now,please enter your account,length:1 ~ 20!\n");
     s_gets(usename,20); 
     printf("please enter your password,length:1 ~ 20!\n");
     s_gets(password,20); 
     Account_Init(temp,usename,password);
     if(Register_process(usename,password) == Error)
-    {
+    {   
+        printf("Register is fail!\n");
         return Error;
     }
-    free(temp);//
-    return OK;
+    else
+    {
+        printf("Register successfully!\n");
+        free(temp);
+        return OK;
+    }
+    
+    
 }
 
 Statue Register_process(char usename[],char password[]) //¾ßÌåµÄ×¢²á¹ı³Ì
@@ -579,8 +645,19 @@ Statue System_ShowAllDetail(void)
     return OK;
 }
 
+Statue SystemPoint_Reset(void)//ÖØÖÃÏµÍ³Ö¸Õë
+{
+    for(int i = 0; i < 20;i++)
+        {System.account[i] = '\0';
+         System.password[i] = '\0';
+        }
+    System.money = 0;
+    System.priorty = User_priorty;
+    return OK;
+}
 
-void System_Menu(void)  //Î´Íê³É,ÏµÍ³²Ëµ¥
+
+void System_Menu(void)  //ÏµÍ³²Ëµ¥
 {   //while(1);
     system("cls");
     printf("****************************************************\n");
@@ -595,6 +672,7 @@ void System_Menu(void)  //Î´Íê³É,ÏµÍ³²Ëµ¥
     switch(select)
     {
         case '1' :User_register();
+                  getch();
                   break;
         case '2' :if(User_login(&System) == OK)
                     UserLoginMenu();
@@ -622,6 +700,8 @@ void UserLoginMenu(void) //ÓÃ»§²Ëµ¥
     printf("*****Welcome     %-20s! Please Enter you Choice!*****\n",System.account);
     printf("****    1.Show your account's Information       ********************\n");
     printf("*****        2.login out your account         **********************\n");
+    printf("*****           3.unsubscribe your account                 *********\n");
+    printf("********           any other key for exit        *******************\n");
     printf("********************************************************************\n");
     
         
@@ -634,8 +714,14 @@ void UserLoginMenu(void) //ÓÃ»§²Ëµ¥
                         printf("Something Wrong!\n");
                       getch();
                       break;  
-            case '2': return ;
-            default : return ;
+            case '2': SystemPoint_Reset();
+                      return ;
+            case '3': User_UnsubscribeAccount();
+                      SystemPoint_Reset();
+                        getch();
+                      return ;
+            default : SystemPoint_Reset();
+                      return ;
         }
     }   
     return ;
@@ -653,6 +739,8 @@ while(1)
     printf("***         2.Show all User's information        ***\n");
     printf("******      3.Change one's Authority           *****\n");
     printf("4.Rangge and show User's Information(Based on Money)\n");
+    printf("******          5.Delect A Account           *******\n");
+    printf("******      Any other key for exit           *******\n");
     printf("****************************************************\n");
 
     
@@ -677,6 +765,10 @@ while(1)
                       break;
             case '4':   System_RerangeProcess();
                        break; 
+            case '5':   System_DeleteAUser();
+                        getch();
+                        break;
+
             default:  return ;
         }
     }
@@ -882,6 +974,7 @@ Statue System_RerangeProcess(void)
        printf("*****************************************\n");
        printf("******What range do you want ?***********\n");
        printf("press 1 for rise and press 2 for decrease\n");
+       printf("******press any other key for exit*******\n");
        printf("*****************************************\n");
        select = getch();
        switch(select)
@@ -944,4 +1037,70 @@ Statue System_ChangeAuthority_process(char * usename,int n)
       Write_A_File_version4(usename,"System_priorty",40,20);
     printf("User's Authority has been changed!\n");
     return OK;
+}
+
+Statue System_DeleteAUser(void)
+{
+    printf("Which Account you want to delete?\n");
+    char usename[ACCOUNT_MAX] = {0};
+    s_gets(usename,20);
+    if(System_Delete_Process(usename) == OK)
+    {
+        printf("Delete Successfully!\n");
+        return OK;
+    }
+    else
+    {
+        printf("Delete Error!!\n");
+        return Error;
+    }
+
+}
+
+Statue System_Delete_Process(char usename[])
+{
+    if(IsFileExist(usename) == No)
+    {
+        printf("Can't Find this User!Please Try again!\n");
+        return Error;
+    }
+    //Read_User_Information(usename,&System);
+    char tempuse[20] = {0};
+    int cnt = 0;
+    
+    Read_All_Data_version2(SYS_ACCOUNT,tempuse,cnt*20,20);
+    while(strcmp(usename,tempuse) != 0)
+    {   
+        cnt++;
+        Read_All_Data_version2(SYS_ACCOUNT,tempuse,cnt*20,20);
+    }
+    DelectDataPriod(SYS_ACCOUNT,cnt*20,20);
+    remove(usename);
+    return OK;
+}
+
+
+Statue User_UnsubscribeAccount(void)//ÓÃ»§×¢Ïú²¿·Ö
+{   
+    int select;
+    printf("Do you really want to unsubscribe your account? Y/N\n");
+    select = getch();
+    if(select == 'Y'|| select == 'y')
+    {
+        if(System_Delete_Process(System.account) == OK)
+           {
+               printf("Your Account has been subscribe,See you again!\n");
+               return OK;
+            } 
+        else
+           {
+               printf("Something wrong!\n");
+               return Error;
+            } 
+    }
+    else
+    {
+        printf("exit\n");
+        return Error;
+    }
 }
